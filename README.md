@@ -1,108 +1,82 @@
 <div align="center">
-  <br />
-    <a href="https://www.youtube.com/watch?v=8GK8R77Bd7g" target="_blank">
-      <img src="https://github.com/user-attachments/assets/1c0131c7-9f2d-4e3b-b47c-9679e76d8f9a" alt="Project Banner">
-    </a>
-  <br />
-  
-  <div>
-    <img src="https://img.shields.io/badge/-Next.JS-black?style=for-the-badge&logoColor=white&logo=nextdotjs&color=black" alt="next.js" />
-    <img src="https://img.shields.io/badge/-Vapi-white?style=for-the-badge&color=5dfeca" alt="vapi" />
-    <img src="https://img.shields.io/badge/-Tailwind_CSS-black?style=for-the-badge&logoColor=white&logo=tailwindcss&color=06B6D4" alt="tailwindcss" />
-    <img src="https://img.shields.io/badge/-Firebase-black?style=for-the-badge&logoColor=white&logo=firebase&color=DD2C00" alt="firebase" />
-  </div>
 
-  <h3 align="center">Prepwise: A job interview preparation platform powered by Vapi AI Voice agents</h3>
+<br/>
 
-   <div align="center">
-     Build this project step by step with our detailed tutorial on <a href="https://www.youtube.com/@javascriptmastery/videos" target="_blank"><b>JavaScript Mastery</b></a> YouTube. Join the JSM family!
-    </div>
+<div>
+  <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Vapi-5dfeca?style=for-the-badge&logo=voicemod&logoColor=black" alt="Vapi" />
+  <img src="https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
 </div>
 
-## 📋 <a name="table">Table of Contents</a>
+<br/>
 
-1. 🤖 [Introduction](#introduction)
-2. ⚙️ [Tech Stack](#tech-stack)
-3. 🔋 [Features](#features)
-4. 🤸 [Quick Start](#quick-start)
-5. 🕸️ [Snippets (Code to Copy)](#snippets)
-6. 🔗 [Assets](#links)
-7. 🚀 [More](#more)
+# 🎙️ Prepwise  
+### AI-Powered Mock Interview Platform
+
+A sleek, smart platform to practice interviews with real-time voice agents. Built to help you integrate AI into your apps — one call at a time.
 
 
+</div>
 
+---
 
+## 🧠 Why Prepwise?
 
+- 🗣️ Practice mock interviews using AI voice agents.
+- 🧾 Get instant feedback using Google Gemini.
+- ⚙️ Learn how to integrate advanced AI workflows.
+- 💡 Great for devs building portfolio-level AI projects.
 
+---
 
+## 🧭 Table of Contents
 
-## <a name="tech-stack">⚙️ Tech Stack</a>
+1. [🚀 Overview](#-overview)  
+2. [🛠️ Tech Stack](#-tech-stack)  
+3. [⚡ Features](#-features)  
+4. [🧑‍💻 Getting Started](#-getting-started)  
+5. [💡 Snippets](#-snippets-code-to-copy)  
+6. [📁 Assets](#-assets)  
+7. [🗺️ Roadmap](#-roadmap)  
+8. [📢 Contributing](#-contributing)  
+9. [📝 License](#-license)
 
-- Next.js
-- Firebase
-- Tailwind CSS
-- Vapi AI
-- shadcn/ui
-- Google Gemeni
+---
 
-## <a name="features">🔋 Features</a>
+## 🚀 Overview
 
-👉 **Authentication**: Sign Up and Sign In using password/email authentication handled by Firebase.
+**Prepwise** is your AI-powered job interview assistant. Talk to a voice agent, get feedback, and polish your skills — all in a modern, intuitive interface.  
+Built with **Next.js**, styled with **TailwindCSS**, backed by **Firebase**, and powered by **Vapi** and **Google Gemini**.
 
-👉 **Create Interviews**: Easily generate job interviews with help of Vapi voice assistants and Google Gemini.
+---
 
-👉 **Get feedback from AI**: Take the interview with AI voice agent, and receive instant feedback based on your conversation.
+## 🛠️ Tech Stack
 
-👉 **Modern UI/UX**: A sleek and user-friendly interface designed for a great experience.
+- ⚛️ **Next.js** — React Framework  
+- 🔥 **Firebase** — Auth & Database  
+- 🎨 **Tailwind CSS** — Modern UI styling  
+- 🎙️ **Vapi** — Real-time voice agents  
+- 🧠 **Google Gemini** — Smart feedback generation  
+- 🧩 **shadcn/ui** — Reusable component library  
 
-👉 **Interview Page**: Conduct AI-driven interviews with real-time feedback and detailed transcripts.
+---
 
-👉 **Dashboard**: Manage and track all your interviews with easy navigation.
+## ⚡ Features
 
-👉 **Responsiveness**: Fully responsive design that works seamlessly across devices.
+- 🔐 **User Authentication** – Secure sign up & login via Firebase  
+- 🧠 **AI Interviewers** – Dynamic voice-based mock interviews  
+- 📝 **Real-Time Transcripts** – Follow the conversation live  
+- 🧾 **Feedback Generator** – Post-interview feedback powered by Gemini  
+- 📊 **Dashboard** – Manage interviews & results in one place  
+- 🖥️ **Responsive UI** – Works across all devices  
+- 💬 **Custom Questions** – Tailor your mock interviews
 
-and many more, including code architecture and reusability
+---
 
-**Installation**
+## 🧑‍💻 Getting Started
 
-Install the project dependencies using npm:
+### 1️⃣ Install Dependencies
 
 ```bash
 npm install
-```
-
-**Set Up Environment Variables**
-
-Create a new file named `.env.local` in the root of your project and add the following content:
-
-```env
-NEXT_PUBLIC_VAPI_WEB_TOKEN=
-NEXT_PUBLIC_VAPI_WORKFLOW_ID=
-
-GOOGLE_GENERATIVE_AI_API_KEY=
-
-NEXT_PUBLIC_BASE_URL=
-
-NEXT_PUBLIC_FIREBASE_API_KEY=
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
-NEXT_PUBLIC_FIREBASE_APP_ID=
-
-FIREBASE_PROJECT_ID=
-FIREBASE_CLIENT_EMAIL=
-FIREBASE_PRIVATE_KEY=
-```
-
-
-
-**Running the Project**
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the project.
-
-
