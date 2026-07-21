@@ -2,9 +2,25 @@
 
 import { auth, db } from "@/firebase/admin";
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
 // Session duration (1 week)
 const SESSION_DURATION = 60 * 60 * 24 * 7;
+
+const updateProfileSchema = z.object({
+  userId: z.string().min(1),
+  name: z.string().trim().min(3).max(80),
+  targetRole: z.string().trim().max(80).optional(),
+  experienceLevel: z.string().trim().max(40).optional(),
+  preferredTechStack: z.string().trim().max(200).optional(),
+});
+
+function getErrorCode(error: unknown) {
+  return typeof error === "object" && error !== null && "code" in error
+    ? String(error.code)
+    : undefined;
+}
 
 // Set session cookie
 export async function setSessionCookie(idToken: string) {
@@ -49,11 +65,11 @@ export async function signUp(params: SignUpParams) {
       success: true,
       message: "Account created successfully. Please sign in.",
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating user:", error);
 
     // Handle Firebase specific errors
-    if (error.code === "auth/email-already-exists") {
+    if (getErrorCode(error) === "auth/email-already-exists") {
       return {
         success: false,
         message: "This email is already in use",
@@ -79,12 +95,50 @@ export async function signIn(params: SignInParams) {
       };
 
     await setSessionCookie(idToken);
-  } catch (error: any) {
-    console.log("");
-
+  } catch {
     return {
       success: false,
       message: "Failed to log into account. Please try again.",
+    };
+  }
+}
+
+export async function signInWithGoogle(params: GoogleSignInParams) {
+  const { uid, name, email, idToken } = params;
+
+  try {
+    const decodedToken = await auth.verifyIdToken(idToken);
+
+    if (decodedToken.uid !== uid) {
+      return {
+        success: false,
+        message: "Google sign in failed because the token user did not match.",
+      };
+    }
+
+    await db.collection("users").doc(uid).set(
+      {
+        name,
+        email,
+      },
+      { merge: true }
+    );
+
+    await setSessionCookie(idToken);
+
+    return {
+      success: true,
+      message: "Signed in with Google.",
+    };
+  } catch (error) {
+    console.error("Error signing in with Google:", error);
+    const code = getErrorCode(error);
+
+    return {
+      success: false,
+      message: code
+        ? `Google sign in failed: ${code}`
+        : "Google sign in failed. Please try again.",
     };
   }
 }
@@ -94,6 +148,28 @@ export async function signOut() {
   const cookieStore = await cookies();
 
   cookieStore.delete("session");
+}
+
+export async function updateUserProfile(params: UpdateUserProfileParams) {
+  const parsed = updateProfileSchema.safeParse(params);
+
+  if (!parsed.success) {
+    return {
+      success: false,
+      message: "Please check your profile details.",
+    };
+  }
+
+  const { userId, ...profile } = parsed.data;
+
+  await db.collection("users").doc(userId).set(profile, { merge: true });
+  revalidatePath("/");
+  revalidatePath("/profile");
+
+  return {
+    success: true,
+    message: "Profile updated.",
+  };
 }
 
 // Get current user from session cookie

@@ -1,6 +1,7 @@
 interface Feedback {
   id: string;
   interviewId: string;
+  userId: string;
   totalScore: number;
   categoryScores: Array<{
     name: string;
@@ -36,6 +37,9 @@ interface User {
   name: string;
   email: string;
   id: string;
+  targetRole?: string;
+  experienceLevel?: string;
+  preferredTechStack?: string;
 }
 
 interface InterviewCardProps {
@@ -71,6 +75,15 @@ interface GetLatestInterviewsParams {
   limit?: number;
 }
 
+interface DashboardSearchParams {
+  role?: string;
+  type?: string;
+  tech?: string;
+  from?: string;
+  to?: string;
+  minScore?: string;
+}
+
 interface SignInParams {
   email: string;
   idToken: string;
@@ -81,6 +94,21 @@ interface SignUpParams {
   name: string;
   email: string;
   password: string;
+}
+
+interface GoogleSignInParams {
+  uid: string;
+  name: string;
+  email: string;
+  idToken: string;
+}
+
+interface UpdateUserProfileParams {
+  userId: string;
+  name: string;
+  targetRole?: string;
+  experienceLevel?: string;
+  preferredTechStack?: string;
 }
 
 type FormType = "sign-in" | "sign-up";

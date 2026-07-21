@@ -33,7 +33,7 @@ const Agent = ({
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [messages, setMessages] = useState<SavedMessage[]>([]);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [lastMessage, setLastMessage] = useState<string>("");
+  const lastMessage = messages.at(-1)?.content;
 
   useEffect(() => {
     const onCallStart = () => {
@@ -83,10 +83,6 @@ const Agent = ({
   }, []);
 
   useEffect(() => {
-    if (messages.length > 0) {
-      setLastMessage(messages[messages.length - 1].content);
-    }
-
     const handleGenerateFeedback = async (messages: SavedMessage[]) => {
       console.log("handleGenerateFeedback");
 
@@ -182,7 +178,7 @@ const Agent = ({
         <div className="transcript-border">
           <div className="transcript">
             <p
-              key={lastMessage}
+              key={lastMessage ?? ""}
               className={cn(
                 "transition-opacity duration-500 opacity-0",
                 "animate-fadeIn opacity-100"
@@ -196,7 +192,13 @@ const Agent = ({
 
       <div className="w-full flex justify-center">
         {callStatus !== "ACTIVE" ? (
-          <button className="relative btn-call" onClick={() => handleCall()}>
+          <button
+            className="relative btn-call"
+            onClick={() => handleCall()}
+            data-umami-event={
+              type === "generate" ? "generate_interview" : "start_voice_interview"
+            }
+          >
             <span
               className={cn(
                 "absolute animate-ping rounded-full opacity-75",
@@ -211,7 +213,11 @@ const Agent = ({
             </span>
           </button>
         ) : (
-          <button className="btn-disconnect" onClick={() => handleDisconnect()}>
+          <button
+            className="btn-disconnect"
+            onClick={() => handleDisconnect()}
+            data-umami-event="finish_interview"
+          >
             End
           </button>
         )}

@@ -147,6 +147,9 @@
   h2 {
     @apply text-3xl font-semibold;
   }
+  h1 {
+    @apply text-5xl font-semibold leading-tight max-sm:text-4xl;
+  }
   h3 {
     @apply text-2xl font-semibold;
   }
@@ -178,7 +181,7 @@
     @apply w-fit !bg-primary-200 !text-dark-100 hover:!bg-primary-200/80 !rounded-full !font-bold px-5 cursor-pointer min-h-10;
   }
   .btn-secondary {
-    @apply w-fit !bg-dark-200 !text-primary-200 hover:!bg-dark-200/80 !rounded-full !font-bold px-5 cursor-pointer min-h-10;
+    @apply w-fit !bg-dark-200 !text-primary-200 hover:!bg-dark-200/80 !rounded-full !font-bold px-5 cursor-pointer min-h-10 border border-light-800;
   }
 
   .btn-upload {
@@ -262,15 +265,75 @@
   }
 
   .root-layout {
-    @apply flex mx-auto max-w-7xl flex-col gap-12 my-12 px-16 max-sm:px-4 max-sm:my-8;
+    @apply flex mx-auto max-w-7xl flex-col gap-10 my-8 px-16 max-sm:px-4 max-sm:my-5;
+
+    nav {
+      @apply flex items-center justify-between gap-4;
+    }
+  }
+
+  .app-nav {
+    @apply sticky top-4 z-30 rounded-2xl border border-light-800 bg-dark-100/80 px-4 py-3 backdrop-blur-xl shadow-2xl shadow-black/20 max-md:static max-md:flex-col max-md:items-stretch;
+  }
+
+  .brand-lockup {
+    @apply flex items-center gap-2 text-primary-100;
+
+    span {
+      @apply text-2xl font-semibold;
+    }
+  }
+
+  .nav-actions {
+    @apply flex items-center gap-2 max-md:flex-wrap;
+  }
+
+  .nav-link {
+    @apply rounded-full px-4 py-2 text-sm font-semibold text-light-100 transition-colors hover:text-primary-200;
   }
 
   .card-cta {
-    @apply flex flex-row blue-gradient-dark rounded-3xl px-16 py-6 items-center justify-between max-sm:px-4;
+    @apply flex flex-row blue-gradient-dark rounded-3xl border border-primary-200/20 px-16 py-10 items-center justify-between shadow-2xl shadow-black/30 max-sm:px-5 max-sm:py-8;
   }
 
   .interviews-section {
-    @apply flex flex-wrap gap-4 max-lg:flex-col w-full items-stretch;
+    @apply grid grid-cols-3 gap-4 max-xl:grid-cols-2 max-lg:grid-cols-1 w-full items-stretch;
+  }
+
+  .empty-state {
+    @apply flex min-h-[50vh] flex-col items-center justify-center gap-4 text-center;
+
+    h1 {
+      @apply text-4xl font-semibold;
+    }
+  }
+
+  .dashboard-panel {
+    @apply flex flex-col gap-4 rounded-2xl border border-light-800 bg-dark-300/60 p-5 shadow-xl shadow-black/10;
+  }
+
+  .metric-card {
+    @apply min-h-32 justify-between;
+
+    p {
+      @apply text-sm uppercase tracking-wider text-light-100/80;
+    }
+
+    h2 {
+      @apply text-5xl text-primary-100;
+    }
+  }
+
+  .section-heading {
+    @apply flex items-end justify-between gap-4 max-sm:flex-col max-sm:items-start;
+
+    span {
+      @apply rounded-full border border-light-800 bg-dark-200 px-4 py-2 text-sm font-semibold text-primary-200;
+    }
+  }
+
+  .interview-card-frame {
+    @apply w-full min-h-96 transition-transform duration-200 hover:-translate-y-1;
   }
 
   .interview-text {

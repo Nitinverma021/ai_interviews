@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import {
   getFeedbackByInterviewId,
+  getFeedbacksByUserId,
   getInterviewById,
 } from "@/lib/actions/general.action";
 import { Button } from "@/components/ui/button";
@@ -13,14 +14,25 @@ import { getCurrentUser } from "@/lib/actions/auth.action";
 const Feedback = async ({ params }: RouteParams) => {
   const { id } = await params;
   const user = await getCurrentUser();
+  if (!user) redirect("/sign-in");
 
   const interview = await getInterviewById(id);
   if (!interview) redirect("/");
 
-  const feedback = await getFeedbackByInterviewId({
-    interviewId: id,
-    userId: user?.id!,
-  });
+  const [feedback, feedbacks] = await Promise.all([
+    getFeedbackByInterviewId({
+      interviewId: id,
+      userId: user.id,
+    }),
+    getFeedbacksByUserId(user.id, 5),
+  ]);
+  const previousFeedback = feedbacks.find(
+    (item) => item.id !== feedback?.id
+  );
+  const scoreDelta =
+    feedback && previousFeedback
+      ? feedback.totalScore - previousFeedback.totalScore
+      : null;
 
   return (
     <section className="section-feedback">
@@ -58,6 +70,18 @@ const Feedback = async ({ params }: RouteParams) => {
       </div>
 
       <hr />
+
+      <div className="dashboard-panel">
+        <h2>Progress</h2>
+        <p>
+          Previous score: {previousFeedback?.totalScore ?? "N/A"} | Change:{" "}
+          {scoreDelta === null
+            ? "N/A"
+            : scoreDelta > 0
+              ? `+${scoreDelta}`
+              : scoreDelta}
+        </p>
+      </div>
 
       <p>{feedback?.finalAssessment}</p>
 
@@ -105,6 +129,7 @@ const Feedback = async ({ params }: RouteParams) => {
           <Link
             href={`/interview/${id}`}
             className="flex w-full justify-center"
+            data-umami-event="retake_interview"
           >
             <p className="text-sm font-semibold text-black text-center">
               Retake Interview

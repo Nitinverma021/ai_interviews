@@ -1,3 +1,5 @@
 import Vapi from '@vapi-ai/web'
 
-export const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_WEB_TOKEN!);
+import { clientEnv } from "@/lib/env.client";
+
+export const vapi = new Vapi(clientEnv.NEXT_PUBLIC_VAPI_WEB_TOKEN);
