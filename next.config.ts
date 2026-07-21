@@ -32,6 +32,7 @@ const nextConfig: NextConfig = {
               "media-src 'self' blob: data:",
               "frame-src https://accounts.google.com",
               "frame-ancestors 'none'",
+              "worker-src 'self'",
               "base-uri 'self'",
               "form-action 'self'",
             ].join("; "),

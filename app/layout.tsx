@@ -1,6 +1,8 @@
 import { Toaster } from "sonner";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Mona_Sans } from "next/font/google";
+
+import PWARegister from "@/components/PWARegister";
 
 import "./globals.css";
 
@@ -12,6 +14,20 @@ const monaSans = Mona_Sans({
 export const metadata: Metadata = {
   title: "PrepWise",
   description: "An AI-powered platform for preparing for mock interviews",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "PrepWise",
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    icon: "/logo.svg",
+    apple: "/logo.svg",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#020408",
 };
 
 function UmamiAnalytics() {
@@ -42,6 +58,7 @@ export default function RootLayout({
       <body className={`${monaSans.className} antialiased pattern`}>
         {children}
 
+        <PWARegister />
         <Toaster />
       </body>
     </html>
