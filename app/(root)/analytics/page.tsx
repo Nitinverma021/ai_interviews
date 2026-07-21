@@ -33,13 +33,18 @@ export default async function AnalyticsPage() {
 
       {shareUrl ? (
         <section className="analytics-frame-shell">
-          <iframe
-            src={shareUrl}
-            title="Umami Analytics"
-            className="h-[78vh] w-full rounded-2xl border-0"
-            loading="lazy"
-            referrerPolicy="strict-origin-when-cross-origin"
-          />
+          <p className="px-2 pb-2 text-sm text-light-100/80 md:hidden">
+            Swipe sideways inside the analytics panel to view the full report.
+          </p>
+          <div className="analytics-frame-scroll">
+            <iframe
+              src={shareUrl}
+              title="Umami Analytics"
+              className="analytics-frame"
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+            />
+          </div>
         </section>
       ) : (
         <section className="dashboard-panel">

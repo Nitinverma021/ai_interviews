@@ -346,6 +346,26 @@
     @apply rounded-2xl border border-light-800 bg-dark-300/60 p-2 shadow-2xl shadow-black/30;
   }
 
+  .analytics-frame-scroll {
+    @apply w-full overflow-x-auto rounded-2xl;
+  }
+
+  .analytics-frame {
+    @apply h-[78vh] w-full rounded-2xl border-0 max-sm:h-[72vh] max-sm:min-w-[900px];
+  }
+
+  .admin-users-panel {
+    @apply overflow-hidden;
+  }
+
+  .admin-user-card {
+    @apply grid gap-4 rounded-2xl border border-light-800 bg-dark-200/70 p-4;
+  }
+
+  .admin-role-badge {
+    @apply shrink-0 rounded-full border border-primary-200/30 bg-primary-200/10 px-3 py-1 text-xs font-semibold capitalize text-primary-200;
+  }
+
   .metric-card {
     @apply min-h-32 justify-between max-sm:min-h-24;
 
