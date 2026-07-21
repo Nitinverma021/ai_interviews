@@ -7,7 +7,7 @@
   <img src="https://img.shields.io/badge/Vapi-5dfeca?style=for-the-badge&logo=voicemod&logoColor=black" alt="Vapi" />
   <img src="https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
-</div>
+</div> 
 
 <br/>
 
