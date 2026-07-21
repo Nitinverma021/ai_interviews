@@ -44,9 +44,9 @@ export async function setSessionCookie(idToken: string) {
 
 export async function signUp(params: SignUpParams) {
   const { uid, name, email } = params;
-  const db = getAdminDb();
 
   try {
+    const db = getAdminDb();
     // check if user exists in db
     const userRecord = await db.collection("users").doc(uid).get();
     if (userRecord.exists)
@@ -87,9 +87,9 @@ export async function signUp(params: SignUpParams) {
 
 export async function signIn(params: SignInParams) {
   const { email, idToken } = params;
-  const auth = getAdminAuth();
 
   try {
+    const auth = getAdminAuth();
     const userRecord = await auth.getUserByEmail(email);
     if (!userRecord)
       return {
@@ -108,10 +108,10 @@ export async function signIn(params: SignInParams) {
 
 export async function signInWithGoogle(params: GoogleSignInParams) {
   const { uid, name, email, idToken } = params;
-  const auth = getAdminAuth();
-  const db = getAdminDb();
 
   try {
+    const auth = getAdminAuth();
+    const db = getAdminDb();
     const decodedToken = await auth.verifyIdToken(idToken);
 
     if (decodedToken.uid !== uid) {
@@ -166,28 +166,36 @@ export async function updateUserProfile(params: UpdateUserProfileParams) {
   }
 
   const { userId, ...profile } = parsed.data;
-  const db = getAdminDb();
+  try {
+    const db = getAdminDb();
 
-  await db.collection("users").doc(userId).set(profile, { merge: true });
-  revalidatePath("/");
-  revalidatePath("/profile");
+    await db.collection("users").doc(userId).set(profile, { merge: true });
+    revalidatePath("/");
+    revalidatePath("/profile");
 
-  return {
-    success: true,
-    message: "Profile updated.",
-  };
+    return {
+      success: true,
+      message: "Profile updated.",
+    };
+  } catch (error) {
+    console.error("Error updating profile:", error);
+
+    return {
+      success: false,
+      message: "Profile update failed. Please try again.",
+    };
+  }
 }
 
 // Get current user from session cookie
 export async function getCurrentUser(): Promise<User | null> {
   const cookieStore = await cookies();
-  const auth = getAdminAuth();
-  const db = getAdminDb();
-
   const sessionCookie = cookieStore.get("session")?.value;
   if (!sessionCookie) return null;
 
   try {
+    const auth = getAdminAuth();
+    const db = getAdminDb();
     const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
 
     // get user info from db

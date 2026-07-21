@@ -4,7 +4,7 @@ import { initializeApp, getApps, cert } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 
-import { serverEnv } from "@/lib/env.server";
+import { getServerEnv } from "@/lib/env.server";
 
 function normalizePrivateKey(privateKey: string) {
   return privateKey
@@ -16,6 +16,7 @@ function normalizePrivateKey(privateKey: string) {
 
 function getFirebaseAdminApp() {
   const apps = getApps();
+  const serverEnv = getServerEnv();
 
   if (apps.length) {
     return apps[0];
