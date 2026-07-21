@@ -1,15 +1,49 @@
+"use client";
+
+import Link from "next/link";
 import { Search } from "lucide-react";
+import { useFormStatus } from "react-dom";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
+function FilterButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      type="submit"
+      className="btn-primary min-w-28"
+      disabled={pending}
+      aria-busy={pending}
+    >
+      <Search />
+      {pending ? "Filtering..." : "Filter"}
+    </Button>
+  );
+}
 
 export default function DashboardFilters({
   filters,
 }: {
   filters: DashboardSearchParams;
 }) {
+  const hasFilters = Object.values(filters).some(Boolean);
+
   return (
     <form className="dashboard-panel" action="/">
+      <div className="flex items-center justify-between gap-3 max-sm:flex-col max-sm:items-start">
+        <div>
+          <h3>Find Practice</h3>
+          <p>Search by role, interview type, stack, date, or score.</p>
+        </div>
+        {hasFilters && (
+          <Button asChild className="btn-secondary">
+            <Link href="/">Clear</Link>
+          </Button>
+        )}
+      </div>
+
       <div className="grid gap-3 md:grid-cols-[1fr_180px_1fr_auto]">
         <Input
           name="role"
@@ -33,10 +67,7 @@ export default function DashboardFilters({
           placeholder="Tech stack"
           className="input"
         />
-        <Button type="submit" className="btn-primary">
-          <Search />
-          Filter
-        </Button>
+        <FilterButton />
       </div>
       <div className="grid gap-3 md:grid-cols-3">
         <Input

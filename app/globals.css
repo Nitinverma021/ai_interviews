@@ -140,6 +140,9 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family:
+      var(--font-mona-sans), Inter, ui-sans-serif, system-ui, sans-serif;
+    text-rendering: optimizeLegibility;
   }
   p {
     @apply text-light-100;
@@ -163,7 +166,7 @@
 
 @layer components {
   .btn-call {
-    @apply inline-block px-7 py-3 font-bold text-sm leading-5 text-white transition-colors duration-150 bg-success-100 border border-transparent rounded-full shadow-sm focus:outline-none focus:shadow-2xl active:bg-success-200 hover:bg-success-200 min-w-28 cursor-pointer items-center justify-center overflow-visible;
+    @apply inline-block px-7 py-3 font-bold text-sm leading-5 text-white transition-all duration-200 bg-success-100 border border-transparent rounded-full shadow-sm focus:outline-none focus:shadow-2xl active:scale-[0.98] active:bg-success-200 hover:bg-success-200 min-w-28 cursor-pointer items-center justify-center overflow-visible;
 
     .span {
       @apply bg-success-100 h-[85%] w-[65%];
@@ -171,17 +174,17 @@
   }
 
   .btn-disconnect {
-    @apply inline-block px-7 py-3 text-sm font-bold leading-5 text-white transition-colors duration-150 bg-destructive-100 border border-transparent rounded-full shadow-sm focus:outline-none focus:shadow-2xl active:bg-destructive-200 hover:bg-destructive-200 min-w-28;
+    @apply inline-block px-7 py-3 text-sm font-bold leading-5 text-white transition-all duration-200 bg-destructive-100 border border-transparent rounded-full shadow-sm focus:outline-none focus:shadow-2xl active:scale-[0.98] active:bg-destructive-200 hover:bg-destructive-200 min-w-28;
   }
 
   .btn-upload {
     @apply flex min-h-14 w-full items-center justify-center gap-1.5 rounded-md;
   }
   .btn-primary {
-    @apply w-fit !bg-primary-200 !text-dark-100 hover:!bg-primary-200/80 !rounded-full !font-bold px-5 cursor-pointer min-h-10;
+    @apply w-fit !bg-primary-200 !text-dark-100 hover:!bg-primary-200/85 !rounded-full !font-bold px-5 cursor-pointer min-h-10 shadow-lg shadow-primary-200/10 transition-all duration-200 active:scale-[0.98];
   }
   .btn-secondary {
-    @apply w-fit !bg-dark-200 !text-primary-200 hover:!bg-dark-200/80 !rounded-full !font-bold px-5 cursor-pointer min-h-10 border border-light-800;
+    @apply w-fit !bg-dark-200 !text-primary-200 hover:!bg-light-800/70 !rounded-full !font-bold px-5 cursor-pointer min-h-10 border border-light-800 transition-all duration-200 active:scale-[0.98];
   }
 
   .btn-upload {
@@ -208,7 +211,7 @@
     }
 
     .btn {
-      @apply !w-full !bg-primary-200 !text-dark-100 hover:!bg-primary-200/80 !rounded-full !min-h-10 !font-bold !px-5 cursor-pointer;
+      @apply !w-full !bg-primary-200 !text-dark-100 hover:!bg-primary-200/85 !rounded-full !min-h-10 !font-bold !px-5 cursor-pointer transition-all duration-200 active:scale-[0.98];
     }
   }
 
@@ -272,8 +275,12 @@
     }
   }
 
+  .call-status-pill {
+    @apply rounded-full border border-light-800 bg-dark-200 px-4 py-2 text-sm font-semibold text-primary-200;
+  }
+
   .app-nav {
-    @apply sticky top-4 z-30 rounded-2xl border border-light-800 bg-dark-100/80 px-4 py-3 backdrop-blur-xl shadow-2xl shadow-black/20 max-md:static max-md:flex-col max-md:items-stretch;
+    @apply sticky top-4 z-30 rounded-2xl border border-light-800 bg-dark-100/85 px-4 py-3 backdrop-blur-xl shadow-2xl shadow-black/20 max-md:static max-md:flex-col max-md:items-stretch;
   }
 
   .brand-lockup {
@@ -289,7 +296,7 @@
   }
 
   .nav-link {
-    @apply rounded-full px-4 py-2 text-sm font-semibold text-light-100 transition-colors hover:text-primary-200;
+    @apply rounded-full px-4 py-2 text-sm font-semibold text-light-100 transition-all duration-200 hover:bg-dark-200 hover:text-primary-200 active:scale-[0.98];
   }
 
   .card-cta {
@@ -310,6 +317,14 @@
 
   .dashboard-panel {
     @apply flex flex-col gap-4 rounded-2xl border border-light-800 bg-dark-300/60 p-5 shadow-xl shadow-black/10;
+
+    h3 {
+      @apply text-primary-100;
+    }
+  }
+
+  .analytics-frame-shell {
+    @apply rounded-2xl border border-light-800 bg-dark-300/60 p-2 shadow-2xl shadow-black/30;
   }
 
   .metric-card {
@@ -333,7 +348,11 @@
   }
 
   .interview-card-frame {
-    @apply w-full min-h-96 transition-transform duration-200 hover:-translate-y-1;
+    @apply w-full min-h-96 transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/30;
+  }
+
+  .card-action {
+    @apply shrink-0;
   }
 
   .interview-text {
@@ -354,6 +373,30 @@
     .badge-text {
       @apply text-sm font-semibold capitalize;
     }
+  }
+
+  .skeleton-hero {
+    @apply flex min-h-64 items-center justify-between gap-8 rounded-3xl border border-light-800 bg-dark-300/60 p-8;
+  }
+
+  .skeleton-media {
+    @apply relative h-40 w-56 overflow-hidden rounded-2xl bg-light-800/40;
+  }
+
+  .skeleton-card {
+    @apply relative flex min-h-96 flex-col gap-5 overflow-hidden rounded-2xl border border-light-800 bg-dark-300/60 p-6;
+  }
+
+  .skeleton-line {
+    @apply relative overflow-hidden rounded-full bg-light-800/50;
+  }
+
+  .skeleton-line::after,
+  .skeleton-media::after,
+  .skeleton-card::after {
+    content: "";
+    @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-primary-100/10 to-transparent;
+    animation: shimmer 1.4s infinite;
   }
 }
 
@@ -393,5 +436,11 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
   }
 }

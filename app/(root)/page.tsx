@@ -12,6 +12,7 @@ import {
   getInterviewsByUserId,
   getLatestInterviews,
   getFeedbacksByUserId,
+  getFeedbacksByInterviewIds,
 } from "@/lib/actions/general.action";
 
 function filterInterviews(
@@ -55,7 +56,7 @@ async function Home({
   if (!user) redirect("/sign-in");
 
   const filters = await searchParams;
-  const [userInterviews, allInterview, feedbacks] = await Promise.all([
+  const [userInterviews, allInterview, analyticsFeedbacks] = await Promise.all([
     getInterviewsByUserId(user.id).catch((error) => {
       console.error("Failed to load user interviews:", error);
       return [];
@@ -70,8 +71,26 @@ async function Home({
     }),
   ]);
 
+  const allLoadedInterviews = [...(userInterviews || []), ...(allInterview || [])];
+  const cardFeedbacks = await getFeedbacksByInterviewIds({
+    userId: user.id,
+    interviewIds: allLoadedInterviews.map((interview) => interview.id),
+  }).catch((error) => {
+    console.error("Failed to load interview card feedback:", error);
+    return [];
+  });
+
   const feedbackByInterviewId = new Map(
-    feedbacks.map((feedback) => [feedback.interviewId, feedback])
+    cardFeedbacks.map((feedback) => [feedback.interviewId, feedback])
+  );
+  const analyticsFeedbackById = new Map(
+    analyticsFeedbacks.map((feedback) => [feedback.id, feedback])
+  );
+  cardFeedbacks.forEach((feedback) => {
+    analyticsFeedbackById.set(feedback.id, feedback);
+  });
+  const feedbacks = Array.from(analyticsFeedbackById.values()).sort((a, b) =>
+    b.createdAt.localeCompare(a.createdAt)
   );
   const filteredUserInterviews = filterInterviews(
     userInterviews,
@@ -140,6 +159,7 @@ async function Home({
                 type={interview.type}
                 techstack={interview.techstack}
                 createdAt={interview.createdAt}
+                feedback={feedbackByInterviewId.get(interview.id)}
               />
             ))
           ) : (
@@ -168,6 +188,7 @@ async function Home({
                 type={interview.type}
                 techstack={interview.techstack}
                 createdAt={interview.createdAt}
+                feedback={feedbackByInterviewId.get(interview.id)}
               />
             ))
           ) : (

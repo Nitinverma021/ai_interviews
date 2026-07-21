@@ -6,24 +6,15 @@ import { Button } from "./ui/button";
 import DisplayTechIcons from "./DisplayTechIcons";
 
 import { cn, getRandomInterviewCover } from "@/lib/utils";
-import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 
-const InterviewCard = async ({
+const InterviewCard = ({
   interviewId,
-  userId,
   role,
   type,
   techstack,
   createdAt,
+  feedback,
 }: InterviewCardProps) => {
-  const feedback =
-    userId && interviewId
-      ? await getFeedbackByInterviewId({
-          interviewId,
-          userId,
-        })
-      : null;
-
   const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
 
   const badgeColor =
@@ -88,10 +79,10 @@ const InterviewCard = async ({
           </p>
         </div>
 
-        <div className="flex flex-row justify-between gap-4">
+        <div className="flex flex-row justify-between gap-4 items-end">
           <DisplayTechIcons techStack={techstack} />
 
-          <Button className="btn-primary">
+          <Button className="btn-primary card-action">
             <Link
               href={
                 feedback

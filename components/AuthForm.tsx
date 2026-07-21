@@ -101,6 +101,8 @@ const AuthForm = ({ type }: { type: FormType }) => {
       password: "",
     },
   });
+  const isSubmitting = form.formState.isSubmitting;
+  const isBusy = isSubmitting || isGoogleLoading;
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
@@ -278,6 +280,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
                 label="Name"
                 placeholder="Your Name"
                 type="text"
+                disabled={isBusy}
               />
             )}
 
@@ -287,6 +290,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
               label="Email"
               placeholder="Your email address"
               type="email"
+              disabled={isBusy}
             />
 
             <FormField
@@ -295,14 +299,34 @@ const AuthForm = ({ type }: { type: FormType }) => {
               label="Password"
               placeholder="Enter your password"
               type="password"
+              disabled={isBusy}
             />
+
+            {isSignIn && (
+              <div className="-mt-3 flex justify-end">
+                <Link
+                  href="/forgot-password"
+                  className="text-sm font-semibold text-primary-200 transition-colors hover:text-primary-100"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            )}
 
             <Button
               className="btn"
               type="submit"
+              disabled={isBusy}
+              aria-busy={isSubmitting}
               data-umami-event={isSignIn ? "signin" : "signup"}
             >
-              {isSignIn ? "Sign In" : "Create an Account"}
+              {isSubmitting
+                ? isSignIn
+                  ? "Signing in..."
+                  : "Creating..."
+                : isSignIn
+                  ? "Sign In"
+                  : "Create an Account"}
             </Button>
           </form>
         </Form>
@@ -317,7 +341,8 @@ const AuthForm = ({ type }: { type: FormType }) => {
           type="button"
           className="btn-secondary w-full"
           onClick={handleGooglePopup}
-          disabled={isGoogleLoading}
+          disabled={isBusy}
+          aria-busy={isGoogleLoading}
           data-umami-event="google_signin"
         >
           <Image src="/globe.svg" alt="" width={18} height={18} />

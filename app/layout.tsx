@@ -1,15 +1,9 @@
 import { Toaster } from "sonner";
 import type { Metadata, Viewport } from "next";
-import { Mona_Sans } from "next/font/google";
 
 import PWARegister from "@/components/PWARegister";
 
 import "./globals.css";
-
-const monaSans = Mona_Sans({
-  variable: "--font-mona-sans",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "PrepWise",
@@ -55,7 +49,7 @@ export default function RootLayout({
       <head>
         <UmamiAnalytics />
       </head>
-      <body className={`${monaSans.className} antialiased pattern`}>
+      <body className="antialiased pattern">
         {children}
 
         <PWARegister />

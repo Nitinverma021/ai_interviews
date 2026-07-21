@@ -91,6 +91,40 @@ export async function getFeedbackByInterviewId(
   return { id: feedbackDoc.id, ...feedbackDoc.data() } as Feedback;
 }
 
+export async function getFeedbacksByInterviewIds(
+  params: GetFeedbacksByInterviewIdsParams
+): Promise<Feedback[]> {
+  const { interviewIds, userId } = params;
+  const db = getAdminDb();
+  const uniqueInterviewIds = Array.from(new Set(interviewIds)).filter(Boolean);
+
+  if (!uniqueInterviewIds.length) return [];
+
+  const chunkSize = 30;
+  const chunks = Array.from(
+    { length: Math.ceil(uniqueInterviewIds.length / chunkSize) },
+    (_, index) =>
+      uniqueInterviewIds.slice(index * chunkSize, index * chunkSize + chunkSize)
+  );
+
+  const snapshots = await Promise.all(
+    chunks.map((chunk) =>
+      db
+        .collection("feedback")
+        .where("userId", "==", userId)
+        .where("interviewId", "in", chunk)
+        .get()
+    )
+  );
+
+  return snapshots.flatMap((snapshot) =>
+    snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Feedback[]
+  );
+}
+
 export async function getFeedbacksByUserId(
   userId: string,
   limit = 20

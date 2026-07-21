@@ -37,6 +37,7 @@ const clientEnvSchema = z.object({
   NEXT_PUBLIC_GOOGLE_CLIENT_ID: optionalString,
   NEXT_PUBLIC_UMAMI_WEBSITE_ID: optionalString,
   NEXT_PUBLIC_UMAMI_SCRIPT_URL: optionalUrl,
+  NEXT_PUBLIC_UMAMI_SHARE_URL: optionalUrl,
 });
 
 export const clientEnv = clientEnvSchema.parse({
@@ -59,4 +60,5 @@ export const clientEnv = clientEnvSchema.parse({
   NEXT_PUBLIC_GOOGLE_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
   NEXT_PUBLIC_UMAMI_WEBSITE_ID: process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID,
   NEXT_PUBLIC_UMAMI_SCRIPT_URL: process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL,
+  NEXT_PUBLIC_UMAMI_SHARE_URL: process.env.NEXT_PUBLIC_UMAMI_SHARE_URL,
 });

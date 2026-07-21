@@ -61,7 +61,18 @@ const Agent = ({
   const [messages, setMessages] = useState<SavedMessage[]>([]);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [callError, setCallError] = useState<string | null>(null);
+  const [isWrappingUp, setIsWrappingUp] = useState(false);
   const lastMessage = messages.at(-1)?.content;
+  const statusLabel =
+    callStatus === CallStatus.CONNECTING
+      ? "Connecting to your interviewer..."
+      : callStatus === CallStatus.ACTIVE
+        ? isSpeaking
+          ? "AI is speaking"
+          : "Call is live"
+        : isWrappingUp
+          ? "Saving your session..."
+          : "Ready when you are";
 
   useEffect(() => {
     const onCallStart = () => {
@@ -69,6 +80,7 @@ const Agent = ({
     };
 
     const onCallEnd = () => {
+      setIsWrappingUp(true);
       setCallStatus(CallStatus.FINISHED);
     };
 
@@ -152,6 +164,7 @@ const Agent = ({
 
   const handleCall = async () => {
     setCallError(null);
+    setIsWrappingUp(false);
 
     if (!vapi) {
       setCallError("Missing NEXT_PUBLIC_VAPI_WEB_TOKEN.");
@@ -206,6 +219,7 @@ const Agent = ({
   };
 
   const handleDisconnect = () => {
+    setIsWrappingUp(true);
     setCallStatus(CallStatus.FINISHED);
     vapi?.stop();
   };
@@ -261,6 +275,8 @@ const Agent = ({
 
       <div className="w-full flex justify-center">
         <div className="flex flex-col items-center gap-3">
+          <p className="call-status-pill">{statusLabel}</p>
+
           {!vapi && (
             <p className="text-center">
               Voice interviews are not configured yet.
@@ -277,16 +293,14 @@ const Agent = ({
             <button
               className="relative btn-call disabled:cursor-not-allowed disabled:opacity-60"
               onClick={() => handleCall()}
-              disabled={!vapi}
+              disabled={!vapi || isWrappingUp}
               data-umami-event={
                 type === "generate"
                   ? "generate_interview"
                   : "start_voice_interview"
               }
             >
-              <span className="relative">
-                Call
-              </span>
+              <span className="relative">Call</span>
             </button>
           ) : (
             <button

@@ -37,9 +37,17 @@ interface User {
   name: string;
   email: string;
   id: string;
+  role: UserRole;
   targetRole?: string;
   experienceLevel?: string;
   preferredTechStack?: string;
+}
+
+type UserRole = "admin" | "customer";
+
+interface AdminUserRow extends User {
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface InterviewCardProps {
@@ -49,6 +57,7 @@ interface InterviewCardProps {
   type: string;
   techstack: string[];
   createdAt?: string;
+  feedback?: Feedback | null;
 }
 
 interface AgentProps {
@@ -67,6 +76,11 @@ interface RouteParams {
 
 interface GetFeedbackByInterviewIdParams {
   interviewId: string;
+  userId: string;
+}
+
+interface GetFeedbacksByInterviewIdsParams {
+  interviewIds: string[];
   userId: string;
 }
 
@@ -109,6 +123,11 @@ interface UpdateUserProfileParams {
   targetRole?: string;
   experienceLevel?: string;
   preferredTechStack?: string;
+}
+
+interface UpdateUserRoleParams {
+  userId: string;
+  role: UserRole;
 }
 
 type FormType = "sign-in" | "sign-up";

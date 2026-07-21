@@ -42,7 +42,7 @@ const nextConfig: NextConfig = {
               "font-src 'self'",
               "connect-src 'self' https://cloud.umami.is https://accounts.google.com https://*.googleapis.com https://*.firebaseio.com https://*.vapi.ai wss://*.vapi.ai https://*.daily.co wss://*.daily.co",
               "media-src 'self' blob: data:",
-              "frame-src https://accounts.google.com",
+              "frame-src https://accounts.google.com https://cloud.umami.is",
               "frame-ancestors 'none'",
               "worker-src 'self'",
               "base-uri 'self'",

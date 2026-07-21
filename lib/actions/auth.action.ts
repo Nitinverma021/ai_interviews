@@ -4,6 +4,7 @@ import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { getServerEnv } from "@/lib/env.server";
 
 // Session duration (1 week)
 const SESSION_DURATION = 60 * 60 * 24 * 7;
@@ -15,6 +16,19 @@ const updateProfileSchema = z.object({
   experienceLevel: z.string().trim().max(40).optional(),
   preferredTechStack: z.string().trim().max(200).optional(),
 });
+
+const updateRoleSchema = z.object({
+  userId: z.string().min(1),
+  role: z.enum(["admin", "customer"]),
+});
+
+function getAdminEmail() {
+  return getServerEnv().ADMIN_EMAIL.toLowerCase();
+}
+
+function getEffectiveRole(email?: string, role?: UserRole): UserRole {
+  return email?.toLowerCase() === getAdminEmail() ? "admin" : role || "customer";
+}
 
 function getErrorCode(error: unknown) {
   return typeof error === "object" && error !== null && "code" in error
@@ -59,6 +73,8 @@ export async function signUp(params: SignUpParams) {
     await db.collection("users").doc(uid).set({
       name,
       email,
+      role: getEffectiveRole(email),
+      createdAt: new Date().toISOString(),
       // profileURL,
       // resumeURL,
     });
@@ -125,6 +141,8 @@ export async function signInWithGoogle(params: GoogleSignInParams) {
       {
         name,
         email,
+        role: getEffectiveRole(email),
+        updatedAt: new Date().toISOString(),
       },
       { merge: true }
     );
@@ -187,6 +205,85 @@ export async function updateUserProfile(params: UpdateUserProfileParams) {
   }
 }
 
+export async function getAllUsersForAdmin(): Promise<AdminUserRow[]> {
+  const currentUser = await getCurrentUser();
+
+  if (currentUser?.role !== "admin") {
+    return [];
+  }
+
+  const db = getAdminDb();
+  const users = await db.collection("users").get();
+
+  return users.docs
+    .map((doc) => {
+      const data = doc.data() as Omit<AdminUserRow, "id">;
+      const role = getEffectiveRole(data.email, data.role);
+
+      return {
+        ...data,
+        id: doc.id,
+        role,
+      };
+    })
+    .sort((a, b) => a.email.localeCompare(b.email));
+}
+
+export async function updateUserRole(params: UpdateUserRoleParams) {
+  const currentUser = await getCurrentUser();
+
+  if (currentUser?.role !== "admin") {
+    return {
+      success: false,
+      message: "Only admins can change roles.",
+    };
+  }
+
+  const parsed = updateRoleSchema.safeParse(params);
+
+  if (!parsed.success) {
+    return {
+      success: false,
+      message: "Invalid role update.",
+    };
+  }
+
+  const db = getAdminDb();
+  const userRef = db.collection("users").doc(parsed.data.userId);
+  const userDoc = await userRef.get();
+
+  if (!userDoc.exists) {
+    return {
+      success: false,
+      message: "User not found.",
+    };
+  }
+
+  const user = userDoc.data() as User;
+
+  if (user.email?.toLowerCase() === getAdminEmail()) {
+    return {
+      success: false,
+      message: "The primary admin role cannot be changed.",
+    };
+  }
+
+  await userRef.set(
+    {
+      role: parsed.data.role,
+      updatedAt: new Date().toISOString(),
+    },
+    { merge: true }
+  );
+
+  revalidatePath("/admin");
+
+  return {
+    success: true,
+    message: "User role updated.",
+  };
+}
+
 // Get current user from session cookie
 export async function getCurrentUser(): Promise<User | null> {
   const cookieStore = await cookies();
@@ -205,10 +302,18 @@ export async function getCurrentUser(): Promise<User | null> {
       .get();
     if (!userRecord.exists) return null;
 
+    const userData = userRecord.data() as User;
+    const role = getEffectiveRole(userData.email, userData.role);
+
+    if (userData.role !== role) {
+      await userRecord.ref.set({ role }, { merge: true });
+    }
+
     return {
-      ...userRecord.data(),
+      ...userData,
       id: userRecord.id,
-    } as User;
+      role,
+    };
   } catch (error) {
     console.log(error);
 
