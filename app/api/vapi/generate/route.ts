@@ -6,6 +6,7 @@ import { z } from "zod";
 import { getAdminDb } from "@/firebase/admin";
 import { getRandomInterviewCover } from "@/lib/utils";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getServerEnv } from "@/lib/env.server";
 
 const generateInterviewSchema = z.object({
   type: z.string().trim().min(1).max(40),
@@ -29,6 +30,8 @@ function getClientKey(requestHeaders: Headers, userId: string) {
 
 export async function POST(request: Request) {
   try {
+    getServerEnv();
+
     const body = generateInterviewSchema.parse(await request.json());
     const requestHeaders = await headers();
     const rateLimit = checkRateLimit(getClientKey(requestHeaders, body.userid), {
@@ -92,7 +95,13 @@ export async function POST(request: Request) {
     }
 
     return Response.json(
-      { success: false, error: "Failed to generate interview." },
+      {
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to generate interview.",
+      },
       { status: 500 }
     );
   }

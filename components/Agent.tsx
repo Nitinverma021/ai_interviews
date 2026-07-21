@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
@@ -33,6 +34,7 @@ const Agent = ({
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [messages, setMessages] = useState<SavedMessage[]>([]);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [callError, setCallError] = useState<string | null>(null);
   const lastMessage = messages.at(-1)?.content;
 
   useEffect(() => {
@@ -62,7 +64,10 @@ const Agent = ({
     };
 
     const onError = (error: Error) => {
-      console.log("Error:", error);
+      console.error("Vapi error:", error);
+      setCallError(error.message || "Voice call failed. Please try again.");
+      setCallStatus(CallStatus.INACTIVE);
+      toast.error("Voice call failed. Please try again.");
     };
 
     if (!vapi) return;
@@ -88,11 +93,14 @@ const Agent = ({
 
   useEffect(() => {
     const handleGenerateFeedback = async (messages: SavedMessage[]) => {
-      console.log("handleGenerateFeedback");
+      if (!interviewId || !userId || messages.length === 0) {
+        router.push("/");
+        return;
+      }
 
       const { success, feedbackId: id } = await createFeedback({
-        interviewId: interviewId!,
-        userId: userId!,
+        interviewId,
+        userId,
         transcript: messages,
         feedbackId,
       });
@@ -115,39 +123,53 @@ const Agent = ({
   }, [messages, callStatus, feedbackId, interviewId, router, type, userId]);
 
   const handleCall = async () => {
+    setCallError(null);
+
     if (!vapi) {
+      setCallError("Missing NEXT_PUBLIC_VAPI_WEB_TOKEN.");
+      toast.error("Voice interviews are not configured yet.");
       setCallStatus(CallStatus.INACTIVE);
       return;
     }
 
-    setCallStatus(CallStatus.CONNECTING);
+    try {
+      setCallStatus(CallStatus.CONNECTING);
 
-    if (type === "generate") {
-      const workflowId = process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID;
-      if (!workflowId) {
-        setCallStatus(CallStatus.INACTIVE);
-        return;
+      if (type === "generate") {
+        const workflowId = process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID;
+        if (!workflowId) {
+          setCallError("Missing NEXT_PUBLIC_VAPI_WORKFLOW_ID.");
+          toast.error("Interview generation workflow is not configured.");
+          setCallStatus(CallStatus.INACTIVE);
+          return;
+        }
+
+        await vapi.start(workflowId, {
+          variableValues: {
+            username: userName,
+            userid: userId,
+          },
+        });
+      } else {
+        const formattedQuestions = questions?.length
+          ? questions.map((question) => `- ${question}`).join("\n")
+          : "Ask the candidate relevant questions for this interview.";
+
+        await vapi.start(interviewer, {
+          variableValues: {
+            questions: formattedQuestions,
+          },
+        });
       }
-
-      await vapi.start(workflowId, {
-        variableValues: {
-          username: userName,
-          userid: userId,
-        },
-      });
-    } else {
-      let formattedQuestions = "";
-      if (questions) {
-        formattedQuestions = questions
-          .map((question) => `- ${question}`)
-          .join("\n");
-      }
-
-      await vapi.start(interviewer, {
-        variableValues: {
-          questions: formattedQuestions,
-        },
-      });
+    } catch (error) {
+      console.error("Failed to start Vapi call:", error);
+      setCallError(
+        error instanceof Error
+          ? error.message
+          : "Could not start the voice call."
+      );
+      setCallStatus(CallStatus.INACTIVE);
+      toast.error("Could not start the voice call.");
     }
   };
 
@@ -206,43 +228,53 @@ const Agent = ({
       )}
 
       <div className="w-full flex justify-center">
-        {!vapi && (
-          <p className="text-center">
-            Voice interviews are not configured yet.
-          </p>
-        )}
+        <div className="flex flex-col items-center gap-3">
+          {!vapi && (
+            <p className="text-center">
+              Voice interviews are not configured yet.
+            </p>
+          )}
 
-        {callStatus !== "ACTIVE" ? (
-          <button
-            className="relative btn-call"
-            onClick={() => handleCall()}
-            disabled={!vapi}
-            data-umami-event={
-              type === "generate" ? "generate_interview" : "start_voice_interview"
-            }
-          >
-            <span
-              className={cn(
-                "absolute animate-ping rounded-full opacity-75",
-                callStatus !== "CONNECTING" && "hidden"
-              )}
-            />
+          {callError && (
+            <p className="max-w-xl text-center text-destructive-100">
+              {callError}
+            </p>
+          )}
 
-            <span className="relative">
-              {callStatus === "INACTIVE" || callStatus === "FINISHED"
-                ? "Call"
-                : ". . ."}
-            </span>
-          </button>
-        ) : (
-          <button
-            className="btn-disconnect"
-            onClick={() => handleDisconnect()}
-            data-umami-event="finish_interview"
-          >
-            End
-          </button>
-        )}
+          {callStatus !== "ACTIVE" ? (
+            <button
+              className="relative btn-call disabled:cursor-not-allowed disabled:opacity-60"
+              onClick={() => handleCall()}
+              disabled={!vapi || callStatus === "CONNECTING"}
+              data-umami-event={
+                type === "generate"
+                  ? "generate_interview"
+                  : "start_voice_interview"
+              }
+            >
+              <span
+                className={cn(
+                  "absolute animate-ping rounded-full opacity-75",
+                  callStatus !== "CONNECTING" && "hidden"
+                )}
+              />
+
+              <span className="relative">
+                {callStatus === "INACTIVE" || callStatus === "FINISHED"
+                  ? "Call"
+                  : "Connecting..."}
+              </span>
+            </button>
+          ) : (
+            <button
+              className="btn-disconnect"
+              onClick={() => handleDisconnect()}
+              data-umami-event="finish_interview"
+            >
+              End
+            </button>
+          )}
+        </div>
       </div>
     </>
   );
