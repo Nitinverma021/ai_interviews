@@ -32,15 +32,15 @@ export const viewport: Viewport = {
 
 function UmamiAnalytics() {
   const websiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
-  const scriptUrl = process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL;
 
-  if (!websiteId || !scriptUrl) return null;
+  if (!websiteId) return null;
 
   return (
     <script
       defer
-      src={scriptUrl}
+      src="/umami/script.js"
       data-website-id={websiteId}
+      data-host-url="/umami"
     />
   );
 }
