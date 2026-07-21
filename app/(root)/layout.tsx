@@ -4,13 +4,13 @@ import { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { UserRound } from "lucide-react";
 
-import { isAuthenticated } from "@/lib/actions/auth.action";
+import { hasSessionCookie } from "@/lib/actions/auth.action";
 import { Button } from "@/components/ui/button";
 import LogoutButton from "@/components/LogoutButton";
 
 const Layout = async ({ children }: { children: ReactNode }) => {
-  const isUserAuthenticated = await isAuthenticated();
-  if (!isUserAuthenticated) redirect("/sign-in");
+  const hasSession = await hasSessionCookie();
+  if (!hasSession) redirect("/sign-in");
 
   return (
     <div className="root-layout">

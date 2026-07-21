@@ -217,8 +217,18 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 }
 
+export async function hasSessionCookie() {
+  const cookieStore = await cookies();
+  return Boolean(cookieStore.get("session")?.value);
+}
+
 // Check if user is authenticated
 export async function isAuthenticated() {
-  const user = await getCurrentUser();
-  return !!user;
+  try {
+    const user = await getCurrentUser();
+    return !!user;
+  } catch (error) {
+    console.error("Authentication check failed:", error);
+    return false;
+  }
 }
