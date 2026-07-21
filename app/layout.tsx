@@ -2,8 +2,6 @@ import { Toaster } from "sonner";
 import type { Metadata } from "next";
 import { Mona_Sans } from "next/font/google";
 
-import { clientEnv } from "@/lib/env.client";
-
 import "./globals.css";
 
 const monaSans = Mona_Sans({
@@ -17,8 +15,8 @@ export const metadata: Metadata = {
 };
 
 function UmamiAnalytics() {
-  const websiteId = clientEnv.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
-  const scriptUrl = clientEnv.NEXT_PUBLIC_UMAMI_SCRIPT_URL;
+  const websiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
+  const scriptUrl = process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL;
 
   if (!websiteId || !scriptUrl) return null;
 
