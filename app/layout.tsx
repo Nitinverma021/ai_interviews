@@ -14,6 +14,21 @@ export const metadata: Metadata = {
   description: "An AI-powered platform for preparing for mock interviews",
 };
 
+function UmamiAnalytics() {
+  const websiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
+  const scriptUrl = process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL;
+
+  if (!websiteId || !scriptUrl) return null;
+
+  return (
+    <script
+      defer
+      src={scriptUrl}
+      data-website-id={websiteId}
+    />
+  );
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -21,6 +36,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <UmamiAnalytics />
+      </head>
       <body className={`${monaSans.className} antialiased pattern`}>
         {children}
 
