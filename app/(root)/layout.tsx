@@ -51,7 +51,7 @@ const Layout = async ({ children }: { children: ReactNode }) => {
           <Button asChild className="btn-secondary">
             <Link href="/profile">
               <UserRound />
-              Profile
+              <span>Profile</span>
             </Link>
           </Button>
           <LogoutButton />

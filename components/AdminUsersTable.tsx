@@ -15,6 +15,9 @@ export default function AdminUsersTable({ users }: { users: AdminUserRow[] }) {
         <ShieldCheck className="size-5 text-primary-200" />
         <h2>Users</h2>
       </div>
+      <p className="text-sm text-light-100/80 md:hidden">
+        Swipe sideways to view email, role, and user ID.
+      </p>
 
       <table className="w-full min-w-[680px] border-separate border-spacing-y-2">
         <thead>

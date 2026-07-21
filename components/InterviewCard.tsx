@@ -48,7 +48,7 @@ const InterviewCard = ({
             alt="cover-image"
             width={90}
             height={90}
-            className="rounded-full object-fit size-[90px]"
+            className="rounded-full object-cover size-[90px] max-sm:size-16"
           />
 
           {/* Interview Role */}
@@ -79,11 +79,12 @@ const InterviewCard = ({
           </p>
         </div>
 
-        <div className="flex flex-row justify-between gap-4 items-end">
+        <div className="flex flex-row justify-between gap-4 items-end max-sm:flex-col max-sm:items-stretch">
           <DisplayTechIcons techStack={techstack} />
 
-          <Button className="btn-primary card-action">
+          <Button className="btn-primary card-action max-sm:w-full">
             <Link
+              className="max-sm:flex max-sm:w-full max-sm:justify-center"
               href={
                 feedback
                   ? `/interview/${interviewId}/feedback`

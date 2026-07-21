@@ -37,13 +37,15 @@ export default function ForgotPasswordForm() {
       toast.success("Password reset email sent.");
     } catch (error) {
       console.error("Password reset failed:", error);
-      toast.error("Could not send reset email. Please check the email and try again.");
+      toast.error(
+        "Could not send reset email. Please check the email and try again."
+      );
     }
   };
 
   return (
-    <div className="card-border lg:min-w-[566px]">
-      <div className="flex flex-col gap-6 card py-14 px-10">
+    <div className="card-border auth-card-shell lg:min-w-[566px]">
+      <div className="auth-card flex flex-col gap-6 card py-14 px-10">
         <div className="flex flex-row gap-2 justify-center">
           <Image src="/logo.svg" alt="logo" height={32} width={38} />
           <h2 className="text-primary-100">PrepWise</h2>

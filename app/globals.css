@@ -151,10 +151,10 @@
     @apply text-3xl font-semibold;
   }
   h1 {
-    @apply text-5xl font-semibold leading-tight max-sm:text-4xl;
+    @apply text-5xl font-semibold leading-tight max-sm:text-3xl;
   }
   h3 {
-    @apply text-2xl font-semibold;
+    @apply text-2xl font-semibold max-sm:text-xl;
   }
   ul {
     @apply list-disc list-inside;
@@ -181,10 +181,10 @@
     @apply flex min-h-14 w-full items-center justify-center gap-1.5 rounded-md;
   }
   .btn-primary {
-    @apply w-fit !bg-primary-200 !text-dark-100 hover:!bg-primary-200/85 !rounded-full !font-bold px-5 cursor-pointer min-h-10 shadow-lg shadow-primary-200/10 transition-all duration-200 active:scale-[0.98];
+    @apply w-fit !bg-primary-200 !text-dark-100 hover:!bg-primary-200/85 !rounded-full !font-bold px-5 cursor-pointer min-h-10 shadow-lg shadow-primary-200/10 transition-all duration-200 active:scale-[0.98] max-sm:min-h-11;
   }
   .btn-secondary {
-    @apply w-fit !bg-dark-200 !text-primary-200 hover:!bg-light-800/70 !rounded-full !font-bold px-5 cursor-pointer min-h-10 border border-light-800 transition-all duration-200 active:scale-[0.98];
+    @apply w-fit !bg-dark-200 !text-primary-200 hover:!bg-light-800/70 !rounded-full !font-bold px-5 cursor-pointer min-h-10 border border-light-800 transition-all duration-200 active:scale-[0.98] max-sm:min-h-11;
   }
 
   .btn-upload {
@@ -207,27 +207,27 @@
     }
 
     .input {
-      @apply !bg-dark-200 !rounded-full !min-h-12 !px-5 placeholder:!text-light-100;
+      @apply !bg-dark-200 !rounded-full !min-h-12 !px-5 placeholder:!text-light-100 max-sm:!min-h-11;
     }
 
     .btn {
-      @apply !w-full !bg-primary-200 !text-dark-100 hover:!bg-primary-200/85 !rounded-full !min-h-10 !font-bold !px-5 cursor-pointer transition-all duration-200 active:scale-[0.98];
+      @apply !w-full !bg-primary-200 !text-dark-100 hover:!bg-primary-200/85 !rounded-full !min-h-10 !font-bold !px-5 cursor-pointer transition-all duration-200 active:scale-[0.98] max-sm:!min-h-11;
     }
   }
 
   .call-view {
-    @apply flex sm:flex-row flex-col gap-10 items-center justify-between w-full;
+    @apply flex sm:flex-row flex-col gap-10 items-center justify-between w-full max-sm:gap-5;
 
     h3 {
       @apply text-center text-primary-100 mt-5;
     }
 
     .card-interviewer {
-      @apply flex-center flex-col gap-2 p-7 h-[400px] blue-gradient-dark rounded-lg border-2 border-primary-200/50 flex-1 sm:basis-1/2 w-full;
+      @apply flex-center flex-col gap-2 p-7 h-[400px] blue-gradient-dark rounded-lg border-2 border-primary-200/50 flex-1 sm:basis-1/2 w-full max-sm:h-64 max-sm:p-5;
     }
 
     .avatar {
-      @apply z-10 flex items-center justify-center blue-gradient rounded-full size-[120px] relative;
+      @apply z-10 flex items-center justify-center blue-gradient rounded-full size-[120px] relative max-sm:size-24;
 
       .animate-speak {
         @apply absolute inline-flex size-5/6 animate-ping rounded-full bg-primary-200 opacity-75;
@@ -247,16 +247,16 @@
     @apply border-gradient p-0.5 rounded-2xl w-full;
 
     .transcript {
-      @apply dark-gradient rounded-2xl  min-h-12 px-5 py-3 flex items-center justify-center;
+      @apply dark-gradient rounded-2xl  min-h-12 px-5 py-3 flex items-center justify-center max-sm:px-4;
 
       p {
-        @apply text-lg text-center text-white;
+        @apply text-lg text-center text-white max-sm:text-base;
       }
     }
   }
 
   .section-feedback {
-    @apply flex flex-col gap-8 max-w-5xl mx-auto max-sm:px-4 text-lg leading-7;
+    @apply flex flex-col gap-8 max-w-5xl mx-auto max-sm:px-1 max-sm:text-base text-lg leading-7;
 
     .buttons {
       @apply flex w-full justify-evenly gap-4 max-sm:flex-col max-sm:items-center;
@@ -267,11 +267,19 @@
     @apply flex items-center justify-center mx-auto max-w-7xl min-h-screen max-sm:px-4 max-sm:py-8;
   }
 
+  .auth-card-shell {
+    @apply max-sm:w-full;
+  }
+
+  .auth-card {
+    @apply max-sm:gap-5 max-sm:px-5 max-sm:py-8;
+  }
+
   .root-layout {
-    @apply flex mx-auto max-w-7xl flex-col gap-10 my-8 px-16 max-sm:px-4 max-sm:my-5;
+    @apply flex mx-auto max-w-7xl flex-col gap-10 my-8 px-16 max-sm:gap-6 max-sm:px-4 max-sm:my-4;
 
     nav {
-      @apply flex items-center justify-between gap-4;
+      @apply flex items-center justify-between gap-4 max-sm:gap-3;
     }
   }
 
@@ -280,27 +288,38 @@
   }
 
   .app-nav {
-    @apply sticky top-4 z-30 rounded-2xl border border-light-800 bg-dark-100/85 px-4 py-3 backdrop-blur-xl shadow-2xl shadow-black/20 max-md:static max-md:flex-col max-md:items-stretch;
+    @apply sticky top-4 z-30 rounded-2xl border border-light-800 bg-dark-100/85 px-4 py-3 backdrop-blur-xl shadow-2xl shadow-black/20 max-md:static max-md:flex-col max-md:items-stretch max-sm:px-3 max-sm:py-3;
   }
 
   .brand-lockup {
-    @apply flex items-center gap-2 text-primary-100;
+    @apply flex items-center gap-2 text-primary-100 max-sm:justify-center;
 
     span {
-      @apply text-2xl font-semibold;
+      @apply text-2xl font-semibold max-sm:text-xl;
     }
   }
 
   .nav-actions {
-    @apply flex items-center gap-2 max-md:flex-wrap;
+    @apply flex items-center gap-2 max-md:flex-wrap max-sm:grid max-sm:grid-cols-2;
+
+    .btn-primary,
+    .btn-secondary {
+      @apply max-sm:w-full;
+    }
+
+    .btn-primary a,
+    .btn-secondary a,
+    button {
+      @apply max-sm:w-full max-sm:justify-center;
+    }
   }
 
   .nav-link {
-    @apply rounded-full px-4 py-2 text-sm font-semibold text-light-100 transition-all duration-200 hover:bg-dark-200 hover:text-primary-200 active:scale-[0.98];
+    @apply rounded-full px-4 py-2 text-sm font-semibold text-light-100 transition-all duration-200 hover:bg-dark-200 hover:text-primary-200 active:scale-[0.98] max-sm:flex max-sm:min-h-11 max-sm:items-center max-sm:justify-center max-sm:border max-sm:border-light-800 max-sm:bg-dark-200/50;
   }
 
   .card-cta {
-    @apply flex flex-row blue-gradient-dark rounded-3xl border border-primary-200/20 px-16 py-10 items-center justify-between shadow-2xl shadow-black/30 max-sm:px-5 max-sm:py-8;
+    @apply flex flex-row blue-gradient-dark rounded-3xl border border-primary-200/20 px-16 py-10 items-center justify-between shadow-2xl shadow-black/30 max-sm:px-5 max-sm:py-7 max-sm:rounded-2xl;
   }
 
   .interviews-section {
@@ -316,7 +335,7 @@
   }
 
   .dashboard-panel {
-    @apply flex flex-col gap-4 rounded-2xl border border-light-800 bg-dark-300/60 p-5 shadow-xl shadow-black/10;
+    @apply flex flex-col gap-4 rounded-2xl border border-light-800 bg-dark-300/60 p-5 shadow-xl shadow-black/10 max-sm:p-4;
 
     h3 {
       @apply text-primary-100;
@@ -328,14 +347,14 @@
   }
 
   .metric-card {
-    @apply min-h-32 justify-between;
+    @apply min-h-32 justify-between max-sm:min-h-24;
 
     p {
       @apply text-sm uppercase tracking-wider text-light-100/80;
     }
 
     h2 {
-      @apply text-5xl text-primary-100;
+      @apply text-5xl text-primary-100 max-sm:text-4xl;
     }
   }
 
@@ -348,7 +367,7 @@
   }
 
   .interview-card-frame {
-    @apply w-full min-h-96 transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/30;
+    @apply w-full min-h-96 transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/30 max-sm:min-h-0;
   }
 
   .card-action {
@@ -368,7 +387,7 @@
   }
 
   .card-interview {
-    @apply dark-gradient rounded-2xl min-h-full flex flex-col p-6 relative overflow-hidden gap-10 justify-between;
+    @apply dark-gradient rounded-2xl min-h-full flex flex-col p-6 relative overflow-hidden gap-10 justify-between max-sm:gap-6 max-sm:p-5;
 
     .badge-text {
       @apply text-sm font-semibold capitalize;
@@ -376,7 +395,7 @@
   }
 
   .skeleton-hero {
-    @apply flex min-h-64 items-center justify-between gap-8 rounded-3xl border border-light-800 bg-dark-300/60 p-8;
+    @apply flex min-h-64 items-center justify-between gap-8 rounded-3xl border border-light-800 bg-dark-300/60 p-8 max-sm:min-h-52 max-sm:p-5;
   }
 
   .skeleton-media {
@@ -384,7 +403,7 @@
   }
 
   .skeleton-card {
-    @apply relative flex min-h-96 flex-col gap-5 overflow-hidden rounded-2xl border border-light-800 bg-dark-300/60 p-6;
+    @apply relative flex min-h-96 flex-col gap-5 overflow-hidden rounded-2xl border border-light-800 bg-dark-300/60 p-6 max-sm:min-h-72 max-sm:p-5;
   }
 
   .skeleton-line {
