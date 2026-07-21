@@ -22,6 +22,32 @@ interface SavedMessage {
   content: string;
 }
 
+function formatVapiError(error: unknown) {
+  if (error instanceof Error && error.message) return error.message;
+
+  if (typeof error === "string") return error;
+
+  if (typeof error === "object" && error !== null) {
+    const record = error as Record<string, unknown>;
+    const nestedError = record.error as Record<string, unknown> | undefined;
+    const message =
+      record.message ||
+      record.reason ||
+      record.statusText ||
+      nestedError?.message ||
+      nestedError?.reason;
+
+    if (typeof message === "string" && message.length > 0) {
+      return message;
+    }
+
+    const json = JSON.stringify(error);
+    if (json && json !== "{}") return json;
+  }
+
+  return "Voice call failed. Check Vapi token, workflow, browser microphone permission, and Vapi dashboard logs.";
+}
+
 const Agent = ({
   userName,
   userId,
@@ -63,11 +89,13 @@ const Agent = ({
       setIsSpeaking(false);
     };
 
-    const onError = (error: Error) => {
+    const onError = (error: unknown) => {
+      const message = formatVapiError(error);
+
       console.error("Vapi error:", error);
-      setCallError(error.message || "Voice call failed. Please try again.");
+      setCallError(message);
       setCallStatus(CallStatus.INACTIVE);
-      toast.error("Voice call failed. Please try again.");
+      toast.error(message);
     };
 
     if (!vapi) return;
@@ -161,15 +189,19 @@ const Agent = ({
           },
         });
       }
-    } catch (error) {
-      console.error("Failed to start Vapi call:", error);
-      setCallError(
-        error instanceof Error
-          ? error.message
-          : "Could not start the voice call."
+
+      setCallStatus((currentStatus) =>
+        currentStatus === CallStatus.CONNECTING
+          ? CallStatus.ACTIVE
+          : currentStatus
       );
+    } catch (error) {
+      const message = formatVapiError(error);
+
+      console.error("Failed to start Vapi call:", error);
+      setCallError(message);
       setCallStatus(CallStatus.INACTIVE);
-      toast.error("Could not start the voice call.");
+      toast.error(message);
     }
   };
 
@@ -241,37 +273,31 @@ const Agent = ({
             </p>
           )}
 
-          {callStatus !== "ACTIVE" ? (
+          {callStatus === "INACTIVE" || callStatus === "FINISHED" ? (
             <button
               className="relative btn-call disabled:cursor-not-allowed disabled:opacity-60"
               onClick={() => handleCall()}
-              disabled={!vapi || callStatus === "CONNECTING"}
+              disabled={!vapi}
               data-umami-event={
                 type === "generate"
                   ? "generate_interview"
                   : "start_voice_interview"
               }
             >
-              <span
-                className={cn(
-                  "absolute animate-ping rounded-full opacity-75",
-                  callStatus !== "CONNECTING" && "hidden"
-                )}
-              />
-
               <span className="relative">
-                {callStatus === "INACTIVE" || callStatus === "FINISHED"
-                  ? "Call"
-                  : "Connecting..."}
+                Call
               </span>
             </button>
           ) : (
             <button
-              className="btn-disconnect"
+              className={cn(
+                "btn-disconnect",
+                callStatus === "CONNECTING" && "opacity-80"
+              )}
               onClick={() => handleDisconnect()}
               data-umami-event="finish_interview"
             >
-              End
+              {callStatus === "CONNECTING" ? "Cancel" : "End"}
             </button>
           )}
         </div>
