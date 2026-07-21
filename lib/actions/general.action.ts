@@ -3,11 +3,12 @@
 import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 
-import { db } from "@/firebase/admin";
+import { getAdminDb } from "@/firebase/admin";
 import { feedbackSchema } from "@/constants";
 
 export async function createFeedback(params: CreateFeedbackParams) {
   const { interviewId, userId, transcript, feedbackId } = params;
+  const db = getAdminDb();
 
   try {
     const formattedTranscript = transcript
@@ -65,6 +66,7 @@ export async function createFeedback(params: CreateFeedbackParams) {
 }
 
 export async function getInterviewById(id: string): Promise<Interview | null> {
+  const db = getAdminDb();
   const interview = await db.collection("interviews").doc(id).get();
 
   return interview.data() as Interview | null;
@@ -74,6 +76,7 @@ export async function getFeedbackByInterviewId(
   params: GetFeedbackByInterviewIdParams
 ): Promise<Feedback | null> {
   const { interviewId, userId } = params;
+  const db = getAdminDb();
 
   const querySnapshot = await db
     .collection("feedback")
@@ -92,6 +95,7 @@ export async function getFeedbacksByUserId(
   userId: string,
   limit = 20
 ): Promise<Feedback[]> {
+  const db = getAdminDb();
   const feedback = await db
     .collection("feedback")
     .where("userId", "==", userId)
@@ -111,6 +115,7 @@ export async function getLatestInterviews(
   params: GetLatestInterviewsParams
 ): Promise<Interview[] | null> {
   const { userId, limit = 20 } = params;
+  const db = getAdminDb();
 
   const interviews = await db
     .collection("interviews")
@@ -132,6 +137,7 @@ export async function getLatestInterviews(
 export async function getInterviewsByUserId(
   userId: string
 ): Promise<Interview[] | null> {
+  const db = getAdminDb();
   const interviews = await db
     .collection("interviews")
     .where("userId", "==", userId)

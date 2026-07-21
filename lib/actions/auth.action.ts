@@ -1,6 +1,6 @@
 "use server";
 
-import { auth, db } from "@/firebase/admin";
+import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -25,6 +25,7 @@ function getErrorCode(error: unknown) {
 // Set session cookie
 export async function setSessionCookie(idToken: string) {
   const cookieStore = await cookies();
+  const auth = getAdminAuth();
 
   // Create session cookie
   const sessionCookie = await auth.createSessionCookie(idToken, {
@@ -43,6 +44,7 @@ export async function setSessionCookie(idToken: string) {
 
 export async function signUp(params: SignUpParams) {
   const { uid, name, email } = params;
+  const db = getAdminDb();
 
   try {
     // check if user exists in db
@@ -85,6 +87,7 @@ export async function signUp(params: SignUpParams) {
 
 export async function signIn(params: SignInParams) {
   const { email, idToken } = params;
+  const auth = getAdminAuth();
 
   try {
     const userRecord = await auth.getUserByEmail(email);
@@ -105,6 +108,8 @@ export async function signIn(params: SignInParams) {
 
 export async function signInWithGoogle(params: GoogleSignInParams) {
   const { uid, name, email, idToken } = params;
+  const auth = getAdminAuth();
+  const db = getAdminDb();
 
   try {
     const decodedToken = await auth.verifyIdToken(idToken);
@@ -161,6 +166,7 @@ export async function updateUserProfile(params: UpdateUserProfileParams) {
   }
 
   const { userId, ...profile } = parsed.data;
+  const db = getAdminDb();
 
   await db.collection("users").doc(userId).set(profile, { merge: true });
   revalidatePath("/");
@@ -175,6 +181,8 @@ export async function updateUserProfile(params: UpdateUserProfileParams) {
 // Get current user from session cookie
 export async function getCurrentUser(): Promise<User | null> {
   const cookieStore = await cookies();
+  const auth = getAdminAuth();
+  const db = getAdminDb();
 
   const sessionCookie = cookieStore.get("session")?.value;
   if (!sessionCookie) return null;

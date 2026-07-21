@@ -3,7 +3,7 @@ import { google } from "@ai-sdk/google";
 import { headers } from "next/headers";
 import { z } from "zod";
 
-import { db } from "@/firebase/admin";
+import { getAdminDb } from "@/firebase/admin";
 import { getRandomInterviewCover } from "@/lib/utils";
 import { checkRateLimit } from "@/lib/rate-limit";
 
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString(),
     };
 
-    await db.collection("interviews").add(interview);
+    await getAdminDb().collection("interviews").add(interview);
 
     return Response.json({ success: true }, { status: 200 });
   } catch (error) {
