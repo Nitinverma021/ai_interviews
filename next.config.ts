@@ -1,12 +1,13 @@
 import type { NextConfig } from "next";
 
-const isDev = process.env.NODE_ENV !== "production";
 const scriptSrc = [
   "'self'",
   "'unsafe-inline'",
-  ...(isDev ? ["'unsafe-eval'"] : []),
+  "'unsafe-eval'",
   "https://cloud.umami.is",
   "https://accounts.google.com",
+  "https://c.daily.co",
+  "https://*.daily.co",
 ].join(" ");
 
 const nextConfig: NextConfig = {
