@@ -65,20 +65,24 @@ const Agent = ({
       console.log("Error:", error);
     };
 
-    vapi.on("call-start", onCallStart);
-    vapi.on("call-end", onCallEnd);
-    vapi.on("message", onMessage);
-    vapi.on("speech-start", onSpeechStart);
-    vapi.on("speech-end", onSpeechEnd);
-    vapi.on("error", onError);
+    if (!vapi) return;
+
+    const vapiClient = vapi;
+
+    vapiClient.on("call-start", onCallStart);
+    vapiClient.on("call-end", onCallEnd);
+    vapiClient.on("message", onMessage);
+    vapiClient.on("speech-start", onSpeechStart);
+    vapiClient.on("speech-end", onSpeechEnd);
+    vapiClient.on("error", onError);
 
     return () => {
-      vapi.off("call-start", onCallStart);
-      vapi.off("call-end", onCallEnd);
-      vapi.off("message", onMessage);
-      vapi.off("speech-start", onSpeechStart);
-      vapi.off("speech-end", onSpeechEnd);
-      vapi.off("error", onError);
+      vapiClient.off("call-start", onCallStart);
+      vapiClient.off("call-end", onCallEnd);
+      vapiClient.off("message", onMessage);
+      vapiClient.off("speech-start", onSpeechStart);
+      vapiClient.off("speech-end", onSpeechEnd);
+      vapiClient.off("error", onError);
     };
   }, []);
 
@@ -111,10 +115,21 @@ const Agent = ({
   }, [messages, callStatus, feedbackId, interviewId, router, type, userId]);
 
   const handleCall = async () => {
+    if (!vapi) {
+      setCallStatus(CallStatus.INACTIVE);
+      return;
+    }
+
     setCallStatus(CallStatus.CONNECTING);
 
     if (type === "generate") {
-      await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
+      const workflowId = process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID;
+      if (!workflowId) {
+        setCallStatus(CallStatus.INACTIVE);
+        return;
+      }
+
+      await vapi.start(workflowId, {
         variableValues: {
           username: userName,
           userid: userId,
@@ -138,7 +153,7 @@ const Agent = ({
 
   const handleDisconnect = () => {
     setCallStatus(CallStatus.FINISHED);
-    vapi.stop();
+    vapi?.stop();
   };
 
   return (
@@ -191,10 +206,17 @@ const Agent = ({
       )}
 
       <div className="w-full flex justify-center">
+        {!vapi && (
+          <p className="text-center">
+            Voice interviews are not configured yet.
+          </p>
+        )}
+
         {callStatus !== "ACTIVE" ? (
           <button
             className="relative btn-call"
             onClick={() => handleCall()}
+            disabled={!vapi}
             data-umami-event={
               type === "generate" ? "generate_interview" : "start_voice_interview"
             }

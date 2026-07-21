@@ -32,8 +32,8 @@ const clientEnvSchema = z.object({
     .min(1)
     .default("1:110067293227:web:86b48509974024338ede6e"),
   NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: optionalString,
-  NEXT_PUBLIC_VAPI_WEB_TOKEN: z.string().min(1),
-  NEXT_PUBLIC_VAPI_WORKFLOW_ID: z.string().min(1),
+  NEXT_PUBLIC_VAPI_WEB_TOKEN: optionalString,
+  NEXT_PUBLIC_VAPI_WORKFLOW_ID: optionalString,
   NEXT_PUBLIC_GOOGLE_CLIENT_ID: optionalString,
   NEXT_PUBLIC_UMAMI_WEBSITE_ID: optionalString,
   NEXT_PUBLIC_UMAMI_SCRIPT_URL: optionalUrl,
